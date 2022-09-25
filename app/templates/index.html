@@ -8,14 +8,14 @@
     <div class="container px-2">
         <h1><b>Top Headlines</b></h1>
 
-        {%  for articleNum in range(headlines['articles'] | length) %}
-            {% set article = headlines['articles'][articleNum] %}
+        {%  for articleNum in range(headlines | length) %}
+            {% set article = headlines[articleNum] %}
             {%  if articleNum % 2 == 0 %}
                 <div class="row mb-3">
             {% endif %}
                 <div class="col">
 
-                    <div class="card mb-3" style="max-width: 540px;">
+                    <div class="card mt-3" style="max-width: 650px;">
                         <div class="row no-gutters">
                             <div class="col-4 my-auto">
                                 <img src="{{ article['urlToImage'] }}" class="img-fluid rounded-start" alt="{{ article['title'] }}">

@@ -23,5 +23,5 @@ class NewsApiContentProvider:
             if len(article['content']) > 150:
                 article['content'] = article['content'][:150] + '...'
 
-        return top_headlines
+        return top_headlines['articles']
     
