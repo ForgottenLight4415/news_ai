@@ -35,6 +35,8 @@ FreshNews.AI uses newsapi.org to curate news and summarize them for the user. Fr
 
 * Run XAMPP as administrator and start Apache and MySQL
 
+* Create database "news_ai" using phpMyAdmin
+
 * Run Flask App
     ```
     flask --debug run
