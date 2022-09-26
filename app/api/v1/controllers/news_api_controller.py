@@ -1,4 +1,5 @@
 from newsapi import NewsApiClient
+from flask import jsonify
 
 class NewsApiContentProvider:
     client = None
@@ -9,7 +10,7 @@ class NewsApiContentProvider:
             self.client = NewsApiClient(apiKey)
             self.apiKey = apiKey
 
-    def top_headlines(self, category=None, language="en", country=None, page=1):
+    def top_headlines(self, category=None, language="en", country=None, page=1, endpoint="web"):
         top_headlines = self.client.get_top_headlines(
             category=category,
             language=language,
@@ -23,5 +24,12 @@ class NewsApiContentProvider:
             if len(article['content']) > 150:
                 article['content'] = article['content'][:150] + '...'
 
-        return top_headlines['articles']
+        top_headlines['page'] = page
+
+        if endpoint == "web":
+            return top_headlines
+        elif endpoint == "api":
+            return jsonify(top_headlines)
+        else:
+            return "<p>Invalid endpoint</p>"
     

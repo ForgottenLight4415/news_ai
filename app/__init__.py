@@ -4,6 +4,7 @@ from dotenv import dotenv_values
 
 from .extensions import db, newsapi
 from .views import main
+from .apis import api
 
 def create_app():
     app = Flask(__name__)
@@ -24,4 +25,5 @@ def create_app():
         db.create_all()
     
     app.register_blueprint(main)
+    app.register_blueprint(api, url_prefix='/api')
     return app

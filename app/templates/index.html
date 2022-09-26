@@ -5,18 +5,18 @@
 {% endblock %}
 
 {% block body %}
-    <div class="container px-2">
+    <div class="container px-1">
         <h1><b>Top Headlines</b></h1>
 
         {%  for articleNum in range(headlines | length) %}
-            {% set article = headlines[articleNum] %}
+            {% set article = headlines['articles'][articleNum] %}
             {%  if articleNum % 2 == 0 %}
                 <div class="row mb-3">
             {% endif %}
                 <div class="col">
 
-                    <div class="card mt-3" style="max-width: 650px;">
-                        <div class="row no-gutters">
+                    <div class="card mt-3" style="max-width: 650px; min-height: 340px;">
+                        <div class="row no-gutters my-auto">
                             <div class="col-4 my-auto">
                                 <img src="{{ article['urlToImage'] }}" class="img-fluid rounded-start" alt="{{ article['title'] }}">
                             </div>
