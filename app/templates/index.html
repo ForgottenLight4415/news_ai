@@ -8,33 +8,21 @@
     <div class="container px-1">
         <h1><b>Top Headlines</b></h1>
 
-        {%  for articleNum in range(headlines | length) %}
+        {%  for articleNum in range(headlines['articles'] | length) %}
             {% set article = headlines['articles'][articleNum] %}
-            {%  if articleNum % 2 == 0 %}
-                <div class="row mb-3">
-            {% endif %}
-                <div class="col">
+                <div class="row my-3">
 
-                    <div class="card mt-3" style="max-width: 650px; min-height: 340px;">
-                        <div class="row no-gutters my-auto">
-                            <div class="col-4 my-auto">
-                                <img src="{{ article['urlToImage'] }}" class="img-fluid rounded-start" alt="{{ article['title'] }}">
-                            </div>
-                            <div class="col-8">
-                                <div class="card-body">
-                                    <h5 class="card-title">{{ article['title'] }}</h5>
-                                    <p class="card-text"><small class="text-muted">{{ article['source']['name'] }} | {{ article['publishedAt'] }}</small></p>
-                                    <p class="card-text">{{ article['content'] }}</p>
-                                    <a href="{{ article['url'] }}" class="btn btn-primary">Full story</a>
-                                </div>
-                            </div>
+                    <div class="card mx-auto" style="max-width: 65%;">
+                        <img class="card-img-top" src="{{ article['urlToImage'] }}" alt="{{ article['title'] }}" style="max-height: 572px; width: auto; height: auto;">
+                        <div class="card-body">
+                          <h5 class="card-title">{{ article['title'] }}</h5>
+                          <p class="card-text"><small class="text-muted">{{ article['source']['name'] }} | {{ article['publishedAt'] }}</small></p>
+                          <p class="card-text">{{ article['content'] }}</p>
+                          <a href="{{ article['url'] }}" class="btn btn-primary">Full story</a>
                         </div>
                     </div>
 
                 </div>
-            {%  if articleNum % 2 != 0 %}
-                </div>
-            {% endif %}
         {% endfor %}
     </div>
 {% endblock %}

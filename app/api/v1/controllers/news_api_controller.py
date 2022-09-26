@@ -1,5 +1,6 @@
 from newsapi import NewsApiClient
 from flask import jsonify
+from newspaper import Article, ArticleException, news_pool
 
 class NewsApiContentProvider:
     client = None
@@ -19,10 +20,18 @@ class NewsApiContentProvider:
         )
 
         for article in top_headlines['articles']:
-            if article['content'] is None:
-                article['content'] = "No content available"
-            if len(article['content']) > 150:
-                article['content'] = article['content'][:150] + '...'
+            print("Connecting to: " + article['url'])
+            try:
+                news_article = Article(article['url'])
+                news_article.download()
+                news_article.parse()
+                news_article.nlp()
+                if news_article.text is None:
+                    article['content'] = "No content available"
+                else:
+                    article['content'] = news_article.summary
+            except ArticleException as e:
+                article['content'] = "An error occurred while getting this article"
 
         top_headlines['page'] = page
 
