@@ -1,15 +1,36 @@
-from newsapi import NewsApiClient
 from flask import jsonify
-from newspaper import Article, ArticleException, news_pool
+from threading import Thread
+from newsapi import NewsApiClient
+from newspaper import Article, ArticleException, Config
+
+user_agent = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/50.0.2661.102 Safari/537.36'
+config = Config()
+config.browser_user_agent = user_agent
+config.request_timeout = 10
+
+
+def make_summary(article: dict):
+    try:
+        print("Connecting to: ", article['url'])
+        news_article = Article(article['url'], config=config)
+        news_article.download()
+        news_article.parse()
+        news_article.nlp()
+        article['content'] = news_article.summary
+    except ArticleException as e:
+        print("An error occurred while making summary from ", article['url'])
+        print(e)
+        article['content'] = "Couldn't fetch summary"
+
 
 class NewsApiContentProvider:
     client = None
     apiKey = None
 
-    def init_client(self, apiKey: str):
+    def init_client(self, api_key: str):
         if self.client is None:
-            self.client = NewsApiClient(apiKey)
-            self.apiKey = apiKey
+            self.client = NewsApiClient(api_key)
+            self.apiKey = api_key
 
     def top_headlines(self, category=None, language="en", country=None, page=1, endpoint="web"):
         top_headlines = self.client.get_top_headlines(
@@ -19,19 +40,15 @@ class NewsApiContentProvider:
             page=page
         )
 
+        thread_pool = []
         for article in top_headlines['articles']:
-            print("Connecting to: " + article['url'])
-            try:
-                news_article = Article(article['url'])
-                news_article.download()
-                news_article.parse()
-                news_article.nlp()
-                if news_article.text is None:
-                    article['content'] = "No content available"
-                else:
-                    article['content'] = news_article.summary
-            except ArticleException as e:
-                article['content'] = "An error occurred while getting this article"
+            thread_pool.append(Thread(target=make_summary, args=(article,)))
+
+        for thread in thread_pool:
+            thread.start()
+
+        for thread in thread_pool:
+            thread.join()
 
         top_headlines['page'] = page
 
@@ -41,4 +58,3 @@ class NewsApiContentProvider:
             return jsonify(top_headlines)
         else:
             return "<p>Invalid endpoint</p>"
-    
