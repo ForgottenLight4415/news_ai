@@ -9,4 +9,5 @@ def main_index():
     category = args.get("category") 
     language = args.get("language") or "en"
     country = args.get("country")
-    return render_template('index.html', headlines=newsapi.top_headlines(category=category, language=language, country=country))
+    page = args.get("page") or 1
+    return render_template('index.html', headlines=newsapi.top_headlines(category=category, language=language, country=country, page=page))

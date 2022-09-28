@@ -14,7 +14,8 @@ def get_headlines():
     category = args.get("category")
     language = args.get("language")
     country = args.get("country")
-    return newsapi.top_headlines(category=category, language=language, country=country, endpoint="api")
+    page = args.get("page")
+    return newsapi.top_headlines(category=category, language=language, country=country, page=page, endpoint="api")
 
 @api.route('/get-categories')
 def get_categories():
