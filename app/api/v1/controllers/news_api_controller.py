@@ -24,6 +24,53 @@ def make_summary(article: dict):
         article['content'] = "Couldn't fetch summary"
 
 
+def make_next_url(category, language, country, page, total_results, next=True):
+    next_url = 'http://localhost:5000/'
+    first_param_set = False
+
+    if category or language or country or page:
+        next_url += "?"
+    else:
+        return next_url
+
+    if category:
+        next_url += "category=" + category
+        first_param_set = True
+
+    if language:
+        if first_param_set:
+            next_url += "&"
+        else:
+            first_param_set = True
+        next_url += "language=" + language
+
+    if country:
+        if first_param_set:
+            next_url += "&"
+        else:
+            first_param_set = True
+        next_url += "country=" + country
+    
+    if page:
+        if first_param_set:
+            next_url += "&"
+        else:
+            first_param_set = True
+        if next:
+            if page != total_results:
+                next_url += "page=" + str(page + 1)
+            else:
+                next_url += "page=" + str(1)
+        else:
+            if page == 1:
+                next_url += "page=" + str(total_results)
+            else:
+                next_url += "page=" + str(page - 1)
+
+    return next_url
+    
+
+
 class NewsApiContentProvider:
     client = None
     apiKey = None
@@ -38,13 +85,16 @@ class NewsApiContentProvider:
             category=category,
             language=language,
             country=country,
-            page=page
+            page=int(page)
         )
 
         if category:
             top_headlines['category'] = " in " + category.capitalize()
         else:
             top_headlines['category'] = ''
+
+        top_headlines['next_url'] = make_next_url(category, language, country, int(page), top_headlines['totalResults'])
+        top_headlines['prev_url'] = make_next_url(category, language, country, int(page), top_headlines['totalResults'], next=False)
 
         thread_pool = []
         for article in top_headlines['articles']:
