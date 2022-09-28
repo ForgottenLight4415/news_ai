@@ -3,10 +3,11 @@ from threading import Thread
 from newsapi import NewsApiClient
 from newspaper import Article, ArticleException, Config
 
-user_agent = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/50.0.2661.102 Safari/537.36'
+user_agent = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/105.0.0.0 Safari/537.36'
 config = Config()
 config.browser_user_agent = user_agent
 config.request_timeout = 10
+print("Plugin configured")
 
 
 def make_summary(article: dict):
@@ -39,6 +40,11 @@ class NewsApiContentProvider:
             country=country,
             page=page
         )
+
+        if category:
+            top_headlines['category'] = " in " + category.capitalize()
+        else:
+            top_headlines['category'] = ''
 
         thread_pool = []
         for article in top_headlines['articles']:

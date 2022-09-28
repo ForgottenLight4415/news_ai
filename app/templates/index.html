@@ -6,7 +6,7 @@
 
 {% block body %}
     <div class="container px-1">
-        <h1><b>Top Headlines</b></h1>
+        <h1><b>Top Headlines{{ headlines['category'] }}</b></h1>
 
         {%  for articleNum in range(headlines['articles'] | length) %}
             {% set article = headlines['articles'][articleNum] %}
