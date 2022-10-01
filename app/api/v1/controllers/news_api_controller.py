@@ -2,6 +2,7 @@ from flask import jsonify
 from threading import Thread
 from newsapi import NewsApiClient
 from newspaper import Article, ArticleException, Config
+from app.nlp import summarize
 
 user_agent = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/105.0.0.0 Safari/537.36'
 config = Config()
@@ -16,12 +17,15 @@ def make_summary(article: dict):
         news_article = Article(article['url'], config=config)
         news_article.download()
         news_article.parse()
-        news_article.nlp()
-        article['content'] = news_article.summary
+        summary = summarize(news_article.title, news_article.text) 
+        if (len(summarize) != 0):
+            article['content'] = summary[0]
+        else:
+            article['content'] = "No summary available for this story."
     except ArticleException as e:
         print("An error occurred while making summary from ", article['url'])
         print(e)
-        article['content'] = "Couldn't fetch summary"
+        article['content'] = "No summary available for this story."
 
 
 def make_next_url(category, language, country, page, total_results, next=True):
