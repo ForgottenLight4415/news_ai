@@ -1,3 +1,4 @@
+from distutils import archive_util
 from flask import jsonify
 from threading import Thread
 from newsapi import NewsApiClient
@@ -18,8 +19,10 @@ def make_summary(article: dict):
         news_article.download()
         news_article.parse()
         summary = summarize(news_article.title, news_article.text) 
-        if (len(summarize) != 0):
-            article['content'] = summary[0]
+        article['content'] = ""
+        if (len(summary) != 0):
+            for sentence in summary:
+                article['content'] += sentence
         else:
             article['content'] = "No summary available for this story."
     except ArticleException as e:
